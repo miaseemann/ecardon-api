@@ -1,13 +1,13 @@
 <?php
 // Abrufen der Checkout-ID aus `payment.php`
-$paymentResponse = file_get_contents('http://localhost/projects/ecardon-api/payment.php');
+$paymentResponse = file_get_contents($_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . 'payment.php');
 $paymentData = json_decode($paymentResponse, true);
 
-if (!isset($paymentData['checkoutId'])) {
+if (!isset($_GET['id'])) {
     die("Fehler beim Abrufen der Checkout-ID");
 }
 
-$checkoutId = $paymentData['checkoutId'];
+$checkoutId = $$_Get['id'];
 ?>
 
 <!DOCTYPE html>

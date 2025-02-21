@@ -1,13 +1,26 @@
 <?php
-// Abrufen der Checkout-ID aus `payment.php`
-$paymentResponse = file_get_contents('http://localhost/projects/ecardon-api/payment.php');
-$paymentData = json_decode($paymentResponse, true);
+// Funktion, um `payment.php` intern per cURL aufzurufen
+function getCheckoutId() {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/payment.php");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-if (!isset($paymentData['checkoutId'])) {
+    $data = json_decode($response, true);
+    return $data['checkoutId'] ?? null;
+}
+
+// Abrufen der Checkout-ID
+$checkoutId = getCheckoutId();
+if (!$checkoutId) {
     die("Fehler beim Abrufen der Checkout-ID");
 }
 
-$checkoutId = $paymentData['checkoutId'];
+// Liste aller unterstützten Zahlungsmarken (getrennt durch Leerzeichen)
+$brands = implode(" ", [
+      "MASTER", "SOFORTUEBERWEISUNG", "TRUSTPAY_VA" , "AMEX", "ALIA", "DISCOVER", "CARTEBANCAIRE", "SEPA"  , "BITCOIN", "RATENKAUF"
+]);
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +35,7 @@ $checkoutId = $paymentData['checkoutId'];
 <body>
 
     <h2>Zahlung durchführen</h2>
-    <form action="status.php" class="paymentWidgets" data-brands="VISA MASTER"></form>
+    <form action="status.php" class="paymentWidgets" data-brands="<?= $brands; ?>"></form>
 
 </body>
 </html>
