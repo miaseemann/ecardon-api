@@ -19,18 +19,40 @@ if (!$checkoutId) {
 
 // Liste aller unterstützten Zahlungsmarken (getrennt durch Leerzeichen)
 $brands = implode(" ", [
-      "MASTER", "SOFORTUEBERWEISUNG", "TRUSTPAY_VA" , "AMEX", "ALIA", "DISCOVER", "CARTEBANCAIRE", "SEPA"  , "BITCOIN", "RATENKAUF"
+      "MASTER", "SOFORTUEBERWEISUNG", "AMEX", "ALIA", "DISCOVER", "CARTEBANCAIRE", "SEPA"  , "BITCOIN", "VPAY", "PAYDIREKT"
 ]);
 ?>
 
 <!DOCTYPE html>
 <html lang="de">
 <head>
+<script src="https://code.jquery.com/jquery.js" type="text/javascript"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zahlung</title>
     <!-- Einbindung des Payment Widgets -->
     <script src="https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=<?= $checkoutId; ?>"></script>
+    <script>
+          var wpwlOptions = {
+    billingAddress: {
+        country: "US",
+        state: "NY",
+        city: "New York",
+        postcode: "12345",
+        street1: "Suite 1234",
+        street2: "Some Road"
+    },
+    mandatoryBillingFields:{
+        country: true,
+        state: true,
+        city: true,
+        postcode: true,
+        street1: true,
+        street2: false
+    }
+}
+
+    </script>
 </head>
 <body>
 
